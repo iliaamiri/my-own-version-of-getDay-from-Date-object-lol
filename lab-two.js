@@ -13,7 +13,7 @@ const monthNames = {
     12: "December"
 };
 
-let monthCodes = {
+const monthCodes = {
     "January": 1,
     "February": 4,
     "March": 4,
