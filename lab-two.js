@@ -28,83 +28,51 @@ const monthCodes = {
     "December": 6
 };
 
-const codesOfTheDay = {
-    0: "Saturday",
-    1: "Sunday",
-    2: "Monday",
-    3: "Tuesday",
-    4: "Wednesday",
-    5: "Thursday",
-    6: "Friday"
-};
+const codesOfTheDay = [
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday"
+];
 
-function makeCalender() {
+function makeCalender(year = 2021) { // year can be anything
 
-    let firstDayOf2021 = new Date("January 1, 2021");
-    let timestamp = firstDayOf2021.getTime();
+    let firstDayOfYear = new Date(`January 1, ${year}`);
+    let timestamp = firstDayOfYear.getTime();
 
-    for (let i = 1; i <= 365; i++) {
+    let totalDays = (isLeapYear(year)) ? 366 : 365;
+
+    for (let i = 1; i <= totalDays; i++) {
         let date = new Date(timestamp);
-        console.log(date.getMonth() + 1 + "-" + date.getDate() + "-" + "2021" + " is a " + getDayOfTheWeek(2021, monthNames[date.getMonth() + 1], date.getDate()));
+        console.log(date.getMonth() + 1 + "-" + date.getDate() + "-" + year + " is a " + getDayOfTheWeek(year, monthNames[date.getMonth() + 1], date.getDate()));
         timestamp = timestamp + 86400000;
     }
 }
 
 function getDayOfTheWeek(year, month, day) {
 
-    // determining if the year is a leap year or not. (Based on wikipedia).
-    let isYearLeap = isLeapYear(year);
-
     let lastTwoDigitsOfTheYear = String(year).substring(String(year).length - 2, String(year).length);
 
-    let firstTwoDigitsOfTheYear = String(year).substring(0, 2);
-
     // STEP 1: counting how many 12s is in the last digits of the year.
-    let countTheTwelves = Math.trunc(lastTwoDigitsOfTheYear / 12);
+    let countTheTwelves = Math.floor(lastTwoDigitsOfTheYear / 12);
 
     // STEP 2: remainder of the last division.
     let remaindersOfDivisionOfTwelve = lastTwoDigitsOfTheYear % 12;
 
     // STEP 3: counting how many 4s is in the remainder of twelve
-    let countTheFoursInRemainders = Math.trunc(remaindersOfDivisionOfTwelve / 4);
+    let countTheFoursInRemainders = Math.floor(remaindersOfDivisionOfTwelve / 4);
 
     // STEP 5
     let codeOfTheMonth_orMore = monthCodes[month];
-    /*
-        Dates in the 1600s: add 6 to step 5
-        Dates in the 1700s: add 4 to step 5
-        Dates in the 1800s: add 2 to step 5
-        Dates in the 2000s: add 6 to step 5
-        Dates in the 2100s: add 4 to step 5
-     */
-    if (String(year).length === 4) {
-        switch (firstTwoDigitsOfTheYear) {
-            case "16":
-                codeOfTheMonth_orMore += 6;
-                break;
-            case "17":
-                codeOfTheMonth_orMore += 4;
-                break;
-            case "18":
-                codeOfTheMonth_orMore += 2;
-                break;
-            case "20":
-                codeOfTheMonth_orMore += 6;
-                break;
-            case "21":
-                codeOfTheMonth_orMore += 4;
-                break;
-        }
-    }
-
-    // January and February dates in leap years: subtract 1 from step 5
-    if (isYearLeap && (month === "January" || month === "February")) {
-
-        codeOfTheMonth_orMore -= 1;
-    }
 
     // STEP 6 adding all of the above numbers: countTheTwelves + remaindersOfDivisionOfTwelve + countTheFoursInRemainders + day of the month + month code
     let sum = countTheTwelves + remaindersOfDivisionOfTwelve + countTheFoursInRemainders + day + codeOfTheMonth_orMore;
+
+    sum = offsetCalculate(sum, year, month);
+
     let codeOfTheDay = sum % 7;
 
     return codesOfTheDay[codeOfTheDay];
@@ -132,7 +100,40 @@ function isLeapYear(year) {
     }
 }
 
-exports.monthNames = monthNames;
-exports.makeCalender = makeCalender;
-exports.isLeapYear = isLeapYear;
-exports.getDayOfTheWeek = getDayOfTheWeek;
+function offsetCalculate(offsetSum, year, month){
+
+    let firstTwoDigitsOfTheYear = String(year).substring(0, 2);
+
+    // January and February dates in leap years: subtract 1 from step 5
+    if (isLeapYear(year) && (month === "January" || month === "February")) {
+        offsetSum -= 1;
+    }
+
+    if (String(year).length === 4) {
+        switch (firstTwoDigitsOfTheYear) {
+            case "16":
+                offsetSum += 6;
+                break;
+            case "17":
+                offsetSum += 4;
+                break;
+            case "18":
+                offsetSum += 2;
+                break;
+            case "20":
+                offsetSum += 6;
+                break;
+            case "21":
+                offsetSum += 4;
+                break;
+        }
+    }
+    return offsetSum;
+}
+
+module.exports = {
+    monthNames,
+    makeCalender,
+    isLeapYear,
+    getDayOfTheWeek
+}

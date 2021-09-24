@@ -14,6 +14,6 @@ if (isNaN(date.getMonth())){
 
 let year = date.getFullYear();
 let month = date.getMonth();
-let day = date.getDay();
+let day = date.getDate();
 
-console.log("The answer is: " + labTwo.getDayOfTheWeek(year, labTwo.monthNames[month], day));
+console.log("The answer is: " + labTwo.getDayOfTheWeek(year, labTwo.monthNames[month + 1], day));
