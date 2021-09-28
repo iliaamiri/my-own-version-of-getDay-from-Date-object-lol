@@ -1,5 +1,5 @@
-let readlineSync = require('readline-sync');
-let labTwo = require('./lab-two');
+const readlineSync = require('readline-sync');
+const labTwo = require('./lab-two');
 
 console.log("Welcome to my own version of getDate() !! \n You can enter a date (MMM DD, YYYY) and receive the week day value of it.");
 
