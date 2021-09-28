@@ -100,7 +100,7 @@ function isLeapYear(year) {
     }
 }
 
-function offsetCalculate(offsetSum, year, month){
+function offsetCalculate(offsetSum, year, month) {
 
     let firstTwoDigitsOfTheYear = String(year).substring(0, 2);
 
